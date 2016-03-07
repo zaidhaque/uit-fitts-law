@@ -104,10 +104,12 @@ var fittsTest = {
 	target: {x: 0, y: 0, r: 10},
 	start: {x: 0, y: 0, t: 0},
 	last: {},
+	totalClicks: 0,
 
 	isoPositions: [],
 	currentPosition: 0,
 	currentCount: 0,
+	missDistance: [],
 	miss: 0,
 	isoLimits: {minD: 120, maxD: 300, minW:10 , maxW: 100},
 	isoParams: {num: 9, distance: 200, width: 50, randomize: true},
@@ -257,7 +259,11 @@ var fittsTest = {
 		}
 		else {
 			this.miss++;
+			this.missDistance.push(distance({x: x, y: y}, this.target) - (this.target.w / 2));
 		}
+		this.totalClicks++;
+		console.log("miss/clicks: " + this.miss + "/" + this.totalClicks);
+		console.log(this.missDistance);
 	},
 	
 	mouseMoved: function(x, y) {
@@ -1139,9 +1145,6 @@ speedEffectiveGroup.append('g')
 speedEffectiveGroup.append('g')
 	.attr('class', 'axis')
 	.call(speedEffYAxis.orient('left'));
-
-
-
 
 
 // init code

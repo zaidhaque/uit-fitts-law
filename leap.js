@@ -1,4 +1,5 @@
 var cursors = {};
+var flag = false;
 
 Leap.loop(function(frame) {
 
@@ -31,10 +32,16 @@ var Cursor = function() {
 
     img.style.transform = 'rotate(' + -rotation + 'rad)';
 
-    if (rotation < -1) {
-     // window.alert("cat is rotating!")
-     simulateClick(position[0]+10, position[1]+10)
+
+    if (!flag && Math.abs(rotation) > 1) {
+      flag = true;
+      simulateClick(position[0]+10, position[1]+10)
     }  
+
+    if (Math.abs(rotation) <= 1) {
+      flag = false;
+    }
+
     img.style.webkitTransform = img.style.MozTransform = img.style.msTransform =
     img.style.OTransform = img.style.transform;
 
@@ -46,6 +53,44 @@ cursors[0] = new Cursor();
 
 // This allows us to move the cat even whilst in an iFrame.
 Leap.loopController.setBackground(true)
+
+function simulateClick(x,y){
+  var ev = document.createEvent("MouseEvent");
+  var el = document.elementFromPoint(x,y);
+  ev.initMouseEvent(
+      "mousedown",
+      true /* bubble */, false /* cancelable */,
+      window, null,
+      x, y, x, y, /* coordinates */
+      false, false, false, false, /* modifier keys */
+      0 /*left*/, null
+  );
+  el.dispatchEvent(ev);
+  ev.initMouseEvent(
+      "mouseup",
+      true /* bubble */, false /* cancelable */,
+      window, null,
+      x, y, x, y, /* coordinates */
+      false, false, false, false, /* modifier keys */
+      0 /*left*/, null
+  );
+  el.dispatchEvent(ev);
+}
+
+// function simulateUnClick(x,y){
+//   var ev = document.createEvent("MouseEvent");
+//   var el = document.elementFromPoint(x,y);
+//   ev.initMouseEvent(
+//       "mouseup",
+//       true /* bubble */, false /* cancelable */,
+//       window, null,
+//       x, y, x, y, /* coordinates */
+//       false, false, false, false, /* modifier keys */
+//       0 /*left*/, null
+//   );
+//   el.dispatchEvent(ev);
+// }
+
 
 
 // var cursors = {};
@@ -111,28 +156,7 @@ Leap.loopController.setBackground(true)
 
 // cursors[0] = new Cursor();
 
-function simulateClick(x,y){
-  var ev = document.createEvent("MouseEvent");
-  var el = document.elementFromPoint(x,y);
-  ev.initMouseEvent(
-      "mousedown",
-      true /* bubble */, false /* cancelable */,
-      window, null,
-      x, y, x, y, /* coordinates */
-      false, false, false, false, /* modifier keys */
-      0 /*left*/, null
-  );
-  el.dispatchEvent(ev);
-  ev.initMouseEvent(
-      "mouseup",
-      true /* bubble */, false /* cancelable */,
-      window, null,
-      x, y, x, y, /* coordinates */
-      false, false, false, false, /* modifier keys */
-      0 /*left*/, null
-  );
-  el.dispatchEvent(ev);
-}
+
 
 // // This allows us to move the cat even whilst in an iFrame.
 // Leap.loopController.setBackground(true)
