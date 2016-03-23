@@ -109,7 +109,16 @@ Leap.loop(function(frame) {
   frame.hands.forEach(function(hand, index) {
     
     var cursor = ( cursors[index] || (cursors[index] = new Cursor()) );    
-    cursor.setTransform(hand.screenPosition(), hand.roll());
+    var rotation = 0.0;
+    if (frame.gestures.length > 0) {
+      var gesture = frame.gestures[0];
+      switch (gesture.type) {
+        case "keyTap":
+          rotation = 1.0;
+          break;
+      }
+    }
+    cursor.setTransform(hand.screenPosition(), rotation);
     
   });
   
