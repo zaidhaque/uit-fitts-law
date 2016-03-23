@@ -10,7 +10,7 @@ Leap.loop(function(frame) {
     
   });
   
-}).use('screenPosition', {scale: 0.4});
+}).use('screenPosition', {scale: 0.6});
 
 
 var Cursor = function() {
@@ -32,13 +32,12 @@ var Cursor = function() {
 
     img.style.transform = 'rotate(' + -rotation + 'rad)';
 
-
-    if (!flag && Math.abs(rotation) > 1) {
+    if (!flag && Math.abs(rotation) >= .8) {
       flag = true;
-      simulateClick(position[0]+10, position[1]+10)
+      simulateClick(position[0]+10, position[1]+10);
     }  
 
-    if (Math.abs(rotation) <= 1) {
+    if (Math.abs(rotation) <= .8) {
       flag = false;
     }
 
