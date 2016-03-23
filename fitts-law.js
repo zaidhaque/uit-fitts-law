@@ -109,16 +109,7 @@ Leap.loop(function(frame) {
   frame.hands.forEach(function(hand, index) {
     
     var cursor = ( cursors[index] || (cursors[index] = new Cursor()) );    
-    var rotation = 0.0;
-    if (frame.gestures.length > 0) {
-      var gesture = frame.gestures[0];
-      switch (gesture.type) {
-        case "keyTap":
-          rotation = 1.0;
-          break;
-      }
-    }
-    cursor.setTransform(hand.screenPosition(), rotation);
+    cursor.setTransform(hand.screenPosition(), hand.roll());
     
   });
   
@@ -193,6 +184,93 @@ function simulateClick(x,y){
 function moveMouse(x,y) {
 	fittsTest.mouseMoved(x,y);
 }
+
+// function simulateUnClick(x,y){
+//   var ev = document.createEvent("MouseEvent");
+//   var el = document.elementFromPoint(x,y);
+//   ev.initMouseEvent(
+//       "mouseup",
+//       true /* bubble */, false /* cancelable */,
+//       window, null,
+//       x, y, x, y, /* coordinates */
+//       false, false, false, false, /* modifier keys */
+//       0 /*left*/, null
+//   );
+//   el.dispatchEvent(ev);
+// }
+
+
+
+// var cursors = {};
+
+// var controller = Leap.loop({enableGestures: true}, function(frame){
+
+//   frame.hands.forEach(function(hand, index) {
+//     var cursor = ( cursors[index] || (cursors[index] = new Cursor()) );    
+//     cursor.setTransform(hand.screenPosition(), hand.roll());
+//     console.log(hand)
+//   });
+
+//   if(frame.valid && frame.gestures.length > 0){
+//     frame.gestures.forEach(function(gesture){
+//         switch (gesture.type){
+//           case "circle":
+//               console.log("Circle Gesture");
+//               break;
+//           case "keyTap":
+//               console.log("Key Tap Gesture");
+//               break;
+//           case "screenTap":
+//               console.log("Screen Tap Gesture");
+//               break;
+//           case "swipe":
+//               console.log("Swipe Gesture");
+//               break;
+//         }
+//     });
+//   }
+// }).use('screenPosition', {scale: 0.3});
+
+// var Cursor = function() {
+//   var cursor = this;
+//   var img = document.createElement('img');
+//   img.src = 'http://www.iconsdb.com/icons/preview/orange/square-xxl.png';
+//   img.width = "10"
+//   img.height = "10"
+//   img.style.position = 'absolute';
+//   img.onload = function () {
+//     cursor.setTransform([window.innerWidth/2,window.innerHeight/2], 0);
+//     document.body.appendChild(img);
+//   }
+  
+//   Cursor.setTransform = function(position, rotation) {
+
+//     img.style.left = position[0] - img.width  / 2 + 'px';
+//     img.style.top  = position[1] - img.height / 2 + 'px';
+
+//     img.style.transform = 'rotate(' + -rotation + 'rad)';
+
+//     if (rotation < -1) {
+// 	    // window.alert("cat is rotating!")
+// 	    simulateClick(position[0]+10, position[1]+10)
+//     }
+    
+//     img.style.webkitTransform = img.style.MozTransform = img.style.msTransform =
+//     img.style.OTransform = img.style.transform;
+
+//   };
+
+// };
+
+// cursors[0] = new Cursor();
+
+
+
+// // This allows us to move the cat even whilst in an iFrame.
+// Leap.loopController.setBackground(true)
+
+// END LEAPMOTION CODE
+
 
 var fittsTest = {
 	target: {x: 0, y: 0, r: 10},
@@ -357,11 +435,11 @@ var fittsTest = {
 			this.missDistance.push(distance({x: x, y: y}, this.target) - (this.target.w / 2));
 		}
 		this.totalClicks++;
-		document.getElementById("resultstext").value += "miss/clicks: " + this.miss + "/" + this.totalClicks + "\n";
-		document.getElementById("resultstext").value += "MISS DISTANCE: \n";
+		console.log("miss/clicks: " + this.miss + "/" + this.totalClicks);
+		console.log("MISS DISTANCE: \n");
 
 		for (var i=0; i < this.missDistance.length; i++) {
-			document.getElementById("resultstext").value += this.missDistance[i] + "\n";
+			console.log(this.missDistance[i] + "\n");
 		}
 	},
 	
@@ -413,10 +491,10 @@ var fittsTest = {
 
 		var dt = data.hit.t - data.start.t;
 		this.timeArray.push(dt);
-		document.getElementById("resultstext").value += "TIME ARRAY: \n";
+		console.log("TIME ARRAY: \n");
 
 		for (var i=0; i < this.timeArray.length; i++) {
-			document.getElementById("resultstext").value += this.timeArray[i] + "\n";
+			console.log(this.timeArray[i] + "\n");
 		}
 	
 		if (dt < MAX_TIME)  // skip if obvious outlier
