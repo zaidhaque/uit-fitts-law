@@ -260,6 +260,10 @@ var fittsTest = {
 	},
 
 	mouseClicked: function(x, y) {
+    var ts = Date.now();
+    var dist = distance({x: x, y: y}, this.target);
+
+    document.getElementById("resultstext").value += ts + "," + x + "," + y + "," + dist + "," + (dist < (this.target.w / 2)) + "\n";
 
 		if (distance({x: x, y: y}, this.target) < (this.target.w / 2)) {
 			this.addDataPoint({start: this.start,
